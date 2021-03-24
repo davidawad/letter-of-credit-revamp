@@ -3,6 +3,8 @@ package com.creditletter.states
 
 import com.creditletter.LetterOfCreditDataStructures.Company
 import com.creditletter.LetterOfCreditDataStructures.PricedGood
+import com.creditletter.contracts.PurchaseOrderContract
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.AbstractParty
@@ -10,6 +12,7 @@ import net.corda.core.identity.Party
 import net.corda.core.serialization.CordaSerializable
 import java.time.LocalDate
 
+@BelongsToContract(PurchaseOrderContract::class)
 data class PurchaseOrderState(
         val owner: Party,
         val seller: Party,

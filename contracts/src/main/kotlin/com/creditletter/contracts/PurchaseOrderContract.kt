@@ -21,7 +21,7 @@ import java.time.ZoneOffset
 class PurchaseOrderContract : Contract {
     companion object {
         @JvmStatic
-        val CONTRACT_ID = "eloc.contract.PurchaseOrderContract"
+        val CONTRACT_ID = "com.creditletter.contracts.PurchaseOrderContract"
     }
 
     interface Commands : CommandData {

@@ -12,6 +12,8 @@ import net.corda.core.identity.Party
 import net.corda.core.internal.toX500Name
 import net.corda.core.node.NodeInfo
 import net.corda.core.transactions.SignedTransaction
+import net.corda.finance.DOLLARS
+import net.corda.finance.workflows.getCashBalances
 import org.bouncycastle.asn1.x500.X500Name
 import org.bouncycastle.asn1.x500.style.BCStyle
 import org.slf4j.LoggerFactory
@@ -21,6 +23,7 @@ import org.springframework.http.MediaType.APPLICATION_JSON_VALUE
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.security.PublicKey
+import java.util.*
 
 
 /**
@@ -82,15 +85,25 @@ class Controller(rpc: NodeRPCConnection) {
     }
 
 
-    @GetMapping(value = ["/templateendpoint"], produces = ["text/plain"])
-    private fun templateendpoint(): String {
-        return "Define an endpoint here."
-    }
+    @RequestMapping(value = ["/loc/cash-balances"], method = [RequestMethod.POST])
+    fun getCashBalances(@RequestBody payload: String?): ResponseEntity<String?>? {
+
+        val req: JsonObject = Gson().fromJson(payload, JsonObject::class.java)
+
+        val ret = JsonObject()
+
+        val balance = proxy.getCashBalances()
+
+        if (balance.isEmpty()) {
+            mapOf(Pair(Currency.getInstance("USD"), 0.DOLLARS))
 
 
-    @RequestMapping(value = ["/games/check"], method = [RequestMethod.POST])
-    fun checkGame(@RequestBody payload: String?): ResponseEntity<String?>? {
+        } else {
+            ret.addProperty("balance", balance.t)
+        }
 
+
+        ResponseEntity.status(HttpStatus.ACCEPTED).contentType(MediaType.APPLICATION_JSON).body(ret.toString())
     }
 
     @RequestMapping(value = ["/games/check"], method = [RequestMethod.POST])
@@ -133,7 +146,7 @@ class Controller(rpc: NodeRPCConnection) {
      * the transaction that generated them.
      */
     private inline fun <reified T : ContractState> getAllStatesOfTypeWithHashesAndSigs(): Response {
-        val states = rpcOps.vaultQueryBy<T>().states
+        val states = proxy.vaultQueryBy<T>().states
         return mapStatesToHashesAndSigs(states)
     }
 
@@ -142,7 +155,7 @@ class Controller(rpc: NodeRPCConnection) {
      * the hashes and signatures of the transaction that generated them.
      */
     private inline fun <reified T : ContractState> getFilteredStatesOfTypeWithHashesAndSigs(filter: (StateAndRef<T>) -> Boolean): Response {
-        val states = rpcOps.vaultQueryBy<T>().states.filter(filter)
+        val states = proxy.vaultQueryBy<T>().states.filter(filter)
         return mapStatesToHashesAndSigs(states)
     }
 

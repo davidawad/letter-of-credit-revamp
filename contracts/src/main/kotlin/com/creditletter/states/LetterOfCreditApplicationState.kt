@@ -4,8 +4,9 @@ import com.creditletter.LetterOfCreditDataStructures.CreditType
 import com.creditletter.LetterOfCreditDataStructures.Location
 import com.creditletter.LetterOfCreditDataStructures.Port
 import com.creditletter.LetterOfCreditDataStructures.PricedGood
-
+import com.creditletter.contracts.LetterOfCreditApplicationContract
 import net.corda.core.contracts.Amount
+import net.corda.core.contracts.BelongsToContract
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
 import net.corda.core.identity.Party
@@ -14,6 +15,7 @@ import java.time.LocalDate
 import java.time.Period
 import java.util.*
 
+@BelongsToContract(LetterOfCreditApplicationContract::class)
 data class LetterOfCreditApplicationState(
         val applicant: Party,
         val issuer: Party,

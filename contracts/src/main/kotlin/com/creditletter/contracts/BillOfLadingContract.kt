@@ -18,7 +18,7 @@ import net.corda.core.transactions.LedgerTransaction
 class BillOfLadingContract : Contract {
     companion object {
         @JvmStatic
-        val CONTRACT_ID = "eloc.contract.BillOfLadingContract"
+        val CONTRACT_ID = "com.creditletter.contracts.BillOfLadingContract"
     }
 
     interface Commands : CommandData {

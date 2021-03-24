@@ -10,7 +10,7 @@ import net.corda.core.transactions.LedgerTransaction
 class LetterOfCreditApplicationContract : Contract {
     companion object {
         @JvmStatic
-        val CONTRACT_ID = "eloc.contract.LetterOfCreditApplicationContract"
+        val CONTRACT_ID = "com.creditletter.contracts.LetterOfCreditApplicationContract"
     }
 
     interface Commands : CommandData {

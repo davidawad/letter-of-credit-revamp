@@ -7,10 +7,8 @@ import com.creditletter.states.LetterOfCreditApplicationProperties
 import com.creditletter.states.LetterOfCreditApplicationState
 import com.creditletter.states.PurchaseOrderState
 import net.corda.core.contracts.Command
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.contracts.requireThat
+import net.corda.core.flows.*
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
 import net.corda.core.utilities.ProgressTracker
@@ -86,4 +84,21 @@ class ApplyForLoCFlow(val beneficiaryName: String, val issuingBankName: String, 
 //        return subFlow(FinalityFlow(stx, targetSession))
         return subFlow(FinalityFlow(stx))
     }
+
 }
+
+
+@InitiatedBy(ApplyForLoCFlow::class)
+class ApplyForLoCFlowResponder(val flowSession: FlowSession) : FlowLogic<SignedTransaction>() {
+
+    @Suspendable
+    override fun call(): SignedTransaction {
+        val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {}
+        }
+        val txWeJustSignedId = subFlow(signedTransactionFlow)
+        return subFlow(ReceiveFinalityFlow(otherSideSession = flowSession, expectedTxId = txWeJustSignedId.id))
+    }
+}
+
+

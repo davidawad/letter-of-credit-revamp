@@ -1,14 +1,13 @@
 package com.creditletter.flows
 
 
+//import com.wildfire.state.PledgeState
+
 import co.paralleluniverse.fibers.Suspendable
 import com.creditletter.states.BillOfLadingState
 import com.creditletter.states.LetterOfCreditApplicationState
 import com.creditletter.states.LetterOfCreditState
 import com.creditletter.states.PurchaseOrderState
-
-//import com.wildfire.state.PledgeState
-
 import net.corda.core.contracts.ContractState
 import net.corda.core.crypto.SecureHash
 import net.corda.core.flows.FlowLogic
@@ -58,3 +57,17 @@ class GetTransactionsFlow : FlowLogic<List<TransactionSummary>>() {
 
 @CordaSerializable
 data class TransactionSummary(val hash: SecureHash, val inputs: List<String>, val outputs: List<String>, val signers: Set<String>)
+
+
+//@InitiatedBy(GetTransactionsFlow::class)
+//class GetTransactionsFlowResponder(val flowSession: FlowSession) : FlowLogic<SignedTransaction>() {
+//
+//    @Suspendable
+//    override fun call(): SignedTransaction {
+//        val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+//            override fun checkTransaction(stx: SignedTransaction) = requireThat {}
+//        }
+//        val txWeJustSignedId = subFlow(signedTransactionFlow)
+//        return subFlow(ReceiveFinalityFlow(otherSideSession = flowSession, expectedTxId = txWeJustSignedId.id))
+//    }
+//}

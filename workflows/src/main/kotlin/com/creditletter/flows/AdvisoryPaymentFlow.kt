@@ -6,10 +6,8 @@ import com.creditletter.contracts.LetterOfCreditContract
 import com.creditletter.states.BillOfLadingState
 import com.creditletter.states.LetterOfCreditState
 import com.creditletter.states.LetterOfCreditStatus
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.contracts.requireThat
+import net.corda.core.flows.*
 import net.corda.core.node.services.queryBy
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
@@ -72,5 +70,18 @@ class AdvisoryPaymentFlow(val locId: String) : FlowLogic<SignedTransaction>() {
         progressTracker.currentStep = FINALISING_TRANSACTION
 
         return subFlow(FinalityFlow(stx))
+    }
+}
+
+@InitiatedBy(AdvisoryPaymentFlow::class)
+class AdvisoryPaymentFlowResponder(val flowSession: FlowSession) : FlowLogic<SignedTransaction>() {
+
+    @Suspendable
+    override fun call(): SignedTransaction {
+        val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {}
+        }
+        val txWeJustSignedId = subFlow(signedTransactionFlow)
+        return subFlow(ReceiveFinalityFlow(otherSideSession = flowSession, expectedTxId = txWeJustSignedId.id))
     }
 }

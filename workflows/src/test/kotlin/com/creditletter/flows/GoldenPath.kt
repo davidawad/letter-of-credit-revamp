@@ -36,14 +36,29 @@ class GoldenPath {
     @Before
     fun setup() {
 
-        network = MockNetwork(listOf("com.creditletter.contracts",
-                "net.corda.finance.contracts.asset"),
+        network = MockNetwork(
+                listOf("com.creditletter.contracts", "net.corda.finance.contracts.asset"),
                 notarySpecs = listOf(MockNetworkNotarySpec(CordaX500Name("Notary", "London", "GB"))))
 
         seller = network.createPartyNode(CordaX500Name.parse("O=Lok Ma Exporters,L=Shenzhen,C=CN"))
         buyer = network.createPartyNode(CordaX500Name.parse("O=Analog Importers,L=Liverpool,C=GB"))
         issuingBank = network.createPartyNode(CordaX500Name.parse("O=First Bank of London,L=London,C=GB"))
         advisingBank = network.createPartyNode(CordaX500Name.parse("O=Shenzhen State Bank,L=Shenzhen,C=CN"))
+
+        val startedNodes = arrayListOf(seller, buyer, issuingBank, advisingBank)
+
+        startedNodes.forEach {
+            it.registerInitiatedFlow(AdvisoryPaymentFlowResponder::class.java)
+            it.registerInitiatedFlow(ApplyForLoCFlowResponder::class.java)
+            it.registerInitiatedFlow(ApproveLoCFlowResponder::class.java)
+            it.registerInitiatedFlow(CreateBoLFlowResponder::class.java)
+            it.registerInitiatedFlow(CreatePurchaseOrderFlowResponder::class.java)
+//            it.registerInitiatedFlow(GetTransactionsFlowResponder::class.java)
+            it.registerInitiatedFlow(IssuerPaymentFlowResponer::class.java)
+            it.registerInitiatedFlow(SellerPaymentFlowResponder::class.java)
+            it.registerInitiatedFlow(ShipFlowResponder::class.java)
+        }
+
         network.runNetwork()
     }
 
@@ -140,19 +155,5 @@ class GoldenPath {
         // Adding the bill of lading.
         val flow4 = CreateBoLFlow(buyer.org, advisingBank.org, issuingBank.org, billOfLadingProperties)
         seller.runFlow(flow4)
-
-        // note that these were not complete in the original app
-
-        // Shipping the order.
-        // TODO()
-
-        // Paying the seller.
-        // TODO()
-
-        // Paying the advising bank.
-        // TODO()
-
-        // Paying the issuing bank.
-        // TODO()
     }
 }

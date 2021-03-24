@@ -12,7 +12,7 @@ open class LetterOfCreditContract : Contract {
 
     companion object {
         @JvmStatic
-        val CONTRACT_ID = "eloc.contract.LetterOfCreditContract"
+        val CONTRACT_ID = "com.creditletter.contracts.LetterOfCreditContract"
     }
 
     interface Commands : CommandData {

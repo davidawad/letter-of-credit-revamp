@@ -6,6 +6,8 @@ import com.creditletter.LetterOfCreditDataStructures.Location
 import com.creditletter.LetterOfCreditDataStructures.Person
 import com.creditletter.LetterOfCreditDataStructures.Port
 import com.creditletter.LetterOfCreditDataStructures.Weight
+import com.creditletter.contracts.BillOfLadingContract
+import net.corda.core.contracts.BelongsToContract
 
 import net.corda.core.contracts.LinearState
 import net.corda.core.contracts.UniqueIdentifier
@@ -14,6 +16,7 @@ import net.corda.core.serialization.CordaSerializable
 import java.time.Instant
 import java.time.LocalDate
 
+@BelongsToContract(BillOfLadingContract::class)
 data class BillOfLadingState(
         val owner: Party,
         val seller: Party,

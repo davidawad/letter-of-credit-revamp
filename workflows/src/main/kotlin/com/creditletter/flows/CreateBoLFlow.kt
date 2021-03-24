@@ -7,10 +7,8 @@ import com.creditletter.states.BillOfLadingProperties
 import com.creditletter.states.BillOfLadingState
 import com.creditletter.states.LetterOfCreditState
 import net.corda.core.contracts.Command
-import net.corda.core.flows.FinalityFlow
-import net.corda.core.flows.FlowLogic
-import net.corda.core.flows.InitiatingFlow
-import net.corda.core.flows.StartableByRPC
+import net.corda.core.contracts.requireThat
+import net.corda.core.flows.*
 import net.corda.core.node.services.queryBy
 import net.corda.core.transactions.SignedTransaction
 import net.corda.core.transactions.TransactionBuilder
@@ -77,5 +75,19 @@ class CreateBoLFlow(val buyerName: String, val advisingBankName: String, val iss
 //        return subFlow(FinalityFlow(utx, sessions))
 
         return subFlow(FinalityFlow(stx))
+    }
+}
+
+
+@InitiatedBy(CreateBoLFlow::class)
+class CreateBoLFlowResponder(val flowSession: FlowSession) : FlowLogic<SignedTransaction>() {
+
+    @Suspendable
+    override fun call(): SignedTransaction {
+        val signedTransactionFlow = object : SignTransactionFlow(flowSession) {
+            override fun checkTransaction(stx: SignedTransaction) = requireThat {}
+        }
+        val txWeJustSignedId = subFlow(signedTransactionFlow)
+        return subFlow(ReceiveFinalityFlow(otherSideSession = flowSession, expectedTxId = txWeJustSignedId.id))
     }
 }
