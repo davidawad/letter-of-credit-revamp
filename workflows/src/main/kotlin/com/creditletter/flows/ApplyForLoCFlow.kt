@@ -81,8 +81,8 @@ class ApplyForLoCFlow(val beneficiaryName: String, val issuingBankName: String, 
         // assume we can simply approve it ourselves
         val targetSession = initiateFlow(application.applicant)
 
-//        return subFlow(FinalityFlow(stx, targetSession))
-        return subFlow(FinalityFlow(stx))
+        return subFlow(FinalityFlow(stx, targetSession))
+//        return subFlow(FinalityFlow(stx))
     }
 
 }

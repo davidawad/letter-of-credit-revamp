@@ -97,7 +97,6 @@ class Controller(rpc: NodeRPCConnection) {
         if (balance.isEmpty()) {
             mapOf(Pair(Currency.getInstance("USD"), 0.DOLLARS))
 
-
         } else {
             ret.addProperty("balance", balance.t)
         }

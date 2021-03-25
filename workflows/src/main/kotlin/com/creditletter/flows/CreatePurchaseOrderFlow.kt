@@ -43,7 +43,6 @@ class CreatePurchaseOrderFlow(val sellerName: String, val purchaseOrderPropertie
 
         progressTracker.currentStep = FINALISING_TRANSACTION
 
-
         val targetSession = initiateFlow(seller)
         return subFlow(FinalityFlow(stx, targetSession))
 
