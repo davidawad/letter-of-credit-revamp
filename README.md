@@ -45,15 +45,6 @@ To run the corda nodes you just need to run the `deployNodes` gradle task and th
 ./build/nodes/runnodes
 ```
 
-#### The backend webserver
-
-Run the `runSantaServer` Gradle task. By default, it connects to the node with RPC address `localhost:10006` with
-the username `user1` and the password `test`, and serves the webserver on port `localhost:10056`.
-
-```
-./gradlew runSantaServer
-```
-
 The frontend will be visible on [localhost:10056](http://localhost:10056)
 
 ##### Background Information
